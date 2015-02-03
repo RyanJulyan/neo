@@ -72,7 +72,7 @@ Fluxible web application pods have the following structure:
             /[ComponentName]
                 /images
                 [ComponentName].jsx
-                [ComponentName].less
+                [ComponentName].(less|scss)
         /public (Destination for webpack built assets; images, fonts, css, scripts)
         /theme
             /[framework-name] (bootstrap, foundation, skeleton etc imports)
@@ -80,9 +80,9 @@ Fluxible web application pods have the following structure:
             /[brand] (brand specific styles)
                 /fonts
                 /images
-                _[brand].less
-                _[brand]-[framework-name]-variables.less
-                _[brand]-fonts.less
+                _[brand].(less|scss)
+                _[brand]-[framework-name]-variables.(less|scss)
+                _[brand]-fonts.(less|scss)
             theme.less
         /views (Fluxible Controller Views)
             /App
@@ -91,7 +91,7 @@ Fluxible web application pods have the following structure:
             /[FeatureName]
                 /images
                 [FeatureName].jsx
-                [FeatureName].less
+                [FeatureName].(less|scss)
             Index.jsx
         bower.json
         client.js
@@ -130,6 +130,13 @@ TODO: Suggested Neo style guide
 ## Getting started
 
 TODO: Getting Started guide
+
+## Roadmap
+
+TODO: Roadmap details
+
+- [Recluster](https://github.com/doxout/recluster)
+- [FlightPlan](https://www.npmjs.com/package/flightplan)
 
 ## Issue Submission
 
