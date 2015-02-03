@@ -15,17 +15,11 @@ or cluster of apps, require.
 Neo's core architecture is build on top of these great libraries:
 
 - [React](http://facebook.github.io/react/)
-
 - [Fluxible](http://www.fluxible.io/)
-
 - [Express](http://expressjs.com/)
-
 - [Webpack](http://webpack.github.io/)
-
 - [Gulp](http://gulpjs.com/)
-
 - [Jest](http://facebook.github.io/jest/)
-
 
 TODO: Overview of architectural principles:
 
@@ -45,7 +39,6 @@ TODO: Overview of Neo's server, boot cycle and cluster engine
 
 TODO: Overview of Neo's client feature
 
-
 ## Neo Concepts
  
 ### Atomic design
@@ -55,11 +48,8 @@ Neo implements an atomic design pattern, where resources required to provide a f
 This practices aims to:
 
 - break project features into DRY and modular encapsulated sections
-
 - favour composability over inheritance
-
 - promote feature and component re-use
-
 - be declarative, not imperative
 
 #### Modularity
@@ -67,7 +57,6 @@ This practices aims to:
 Each module, be it a feature, component, service or theme, contains all the markup, scripting, styling and any other assets
 required to render or encapsulate itself.
 A module may, and is promoted to be, composed of other modules.
-
 
 ### Pods
 
