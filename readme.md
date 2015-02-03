@@ -76,7 +76,7 @@ Fluxible web application pods have the following structure:
         /public (Destination for webpack built assets; images, fonts, css, scripts)
         /theme
             /[framework-name] (bootstrap, foundation, skeleton etc imports)
-                _[framework-name].less
+                _[framework-name].(less|scss)
             /[brand] (brand specific styles)
                 /fonts
                 /images
