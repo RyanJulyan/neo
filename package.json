@@ -1,0 +1,57 @@
+{
+  "name": "neo",
+  "version": "0.0.1",
+  "description": "Modular isomorphic Fluxible web application platform",
+  "main": "neo.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nubotics/neo.git"
+  },
+  "keywords": [
+    "isomorphic",
+    "fluxible",
+    "react",
+    "webpack",
+    "express",
+    "neo",
+    "arc"
+  ],
+  "author": "Barry Buck <jozi011@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Nubotics/neo/issues"
+  },
+  "homepage": "https://github.com/Nubotics/neo",
+  "dependencies": {
+    "body-parser": "^1.11.0",
+    "debug": "^2.1.1",
+    "express": "^4.11.2",
+    "flux-router-component": "^0.5.8",
+    "fluxible": "^0.2.0",
+    "fluxible-plugin-fetchr": "^0.2.3",
+    "fluxible-plugin-routr": "^0.3.0",
+    "link-package": "0.0.2",
+    "node-jsx": "^0.12.4",
+    "react": "^0.12.2",
+    "serialize-javascript": "^1.0.0"
+  },
+  "devDependencies": {
+    "css-loader": "^0.9.1",
+    "extract-text-webpack-plugin": "^0.3.8",
+    "file-loader": "^0.8.1",
+    "flightplan": "^0.6.0",
+    "gulp": "^3.8.10",
+    "jest": "^0.1.37",
+    "jsx-loader": "^0.12.2",
+    "less": "^2.3.1",
+    "less-loader": "^2.0.0",
+    "style-loader": "^0.8.3",
+    "webpack": "^1.5.3"
+  }
+}
