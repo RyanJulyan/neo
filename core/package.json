@@ -1,0 +1,29 @@
+{
+  "name": "neo-core",
+  "version": "0.0.1",
+  "description": "Pluggable and extendable core of the Neo isomporphic web platform",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nubotics/neo-core.git"
+  },
+  "keywords": [
+    "neo",
+    "neo-core",
+    "isomorphic",
+    "fluxible",
+    "react"
+  ],
+  "author": "Barry Buck <@nubuck>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Nubotics/neo-core/issues"
+  },
+  "homepage": "https://github.com/Nubotics/neo-core"
+}
