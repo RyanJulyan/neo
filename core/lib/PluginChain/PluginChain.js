@@ -8,7 +8,7 @@ module.exports = function (neo) {
       var pluginFolder = neo.util.resolve(neo.appPath, 'global/plugins');
       console.log(pluginFolder);
 
-      /*      var plugins = require('include-all')({
+            var plugins = require('include-all')({
        dirname: pluginFolder,
        filter: /(.+)\.js$/,
        excludeDirs: /^\.(git|svn)$/,
@@ -17,7 +17,7 @@ module.exports = function (neo) {
        })
        ;
 
-       console.log(plugins);*/
+       console.log(plugins);
 
     }
   }

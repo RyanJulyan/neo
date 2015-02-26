@@ -1,32 +1,21 @@
-/*global document, window */
-
+/**
+ * Copyright 2014, Yahoo! Inc.
+ * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
+ */
+/*global App, document, window */
 'use strict';
-/*
- * React
- * */
 var React = require('react');
-
-/*
-* Utils
-* */
 var debug = require('debug');
-var debugClient = debug('fluxible-example');
-
-/*
-* Fluxible
-* */
-var app = require('../app/app');
+var bootstrapDebug = debug('Example');
+var app = require('./app');
 var dehydratedState = window.App; // Sent from the server
+var Router = require('react-router');
+var HistoryLocation = Router.HistoryLocation;
 
 window.React = React; // For chrome dev tool support
+debug.enable('*');
 
-// expose debug object to browser, so that it can be enabled/disabled from browser:
-// https://github.com/visionmedia/debug#browser-support
-window.fluxibleDebug = debug;
-
-debugClient('rehydrating app');
-
-// pass in the dehydrated server state from server.js
+bootstrapDebug('rehydrating app');
 app.rehydrate(dehydratedState, function (err, context) {
   if (err) {
     throw err;
@@ -34,13 +23,13 @@ app.rehydrate(dehydratedState, function (err, context) {
   window.context = context;
   var mountNode = document.getElementById('app');
 
-  debugClient('React Rendering');
-  React.withContext(context.getComponentContext(), function () {
+  bootstrapDebug('React Rendering');
 
-    React.render(context.createElement(), mountNode, function () {
-
-      debugClient('React Rendered');
-
+  Router.run(app.getAppComponent(), HistoryLocation, function (Handler, state) {
+    React.render(Handler({
+      context: context.getComponentContext()
+    }), mountNode, function () {
+      bootstrapDebug('React Rendered');
     });
   });
 });

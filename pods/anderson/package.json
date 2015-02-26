@@ -1,0 +1,15 @@
+{
+  "name": "anderson",
+  "version": "0.0.1",
+  "description": "The default pod for neo",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Barry Buck <barry@fense.io>",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^0.12.2",
+    "react-router": "^0.12.4"
+  }
+}

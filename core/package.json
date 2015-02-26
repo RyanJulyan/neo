@@ -25,5 +25,22 @@
   "bugs": {
     "url": "https://github.com/Nubotics/neo-core/issues"
   },
-  "homepage": "https://github.com/Nubotics/neo-core"
+  "homepage": "https://github.com/Nubotics/neo-core",
+  "dependencies": {
+    "async": "^0.9.0",
+    "bootable": "^0.2.4",
+    "bootable-environment": "^0.2.0",
+    "debug": "^2.1.1",
+    "express": "^4.12.0",
+    "fluxible": "^0.2.2",
+    "glob": "^4.4.0",
+    "highland": "^2.4.0",
+    "lodash": "^3.3.0",
+    "node-dir": "^0.1.6",
+    "node-glob-loader": "0.0.15",
+    "node-jsx": "^0.12.4",
+    "react": "^0.12.2",
+    "react-router": "^0.12.2",
+    "sequence": "^3.0.0"
+  }
 }

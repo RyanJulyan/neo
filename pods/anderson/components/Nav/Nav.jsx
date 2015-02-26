@@ -1,43 +1,19 @@
+/**
+ * Copyright 2014, Yahoo! Inc.
+ * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
+ */
 'use strict';
-
-/*
-* React and Fluxible
-* */
 var React = require('react');
-var NavLink = require('flux-router-component').NavLink;
+var Link = require('react-router').Link;
+var StateMixin = require('react-router').State;
 
-/*
-* Component Class
-* */
 var Nav = React.createClass({
-  getDefaultProps: function () {
-    return {
-      selected: 'home',
-      links: {}
-    };
-  },
-  render: function () {
-    var selected = this.props.selected;
-    var links = this.props.links;
-
-    var linkHTML = Object.keys(links).map(function (name) {
-      var className = '';
-      var link = links[name];
-
-      if (selected === name) {
-        className = 'pure-menu-selected';
-      }
-
-      return (
-        <li className={className} key={link.path}>
-          <NavLink routeName={link.page}>{link.title}</NavLink>
-        </li>
-      );
-    });
-
+  mixins: [StateMixin],
+  render: function() {
     return (
       <ul className="pure-menu pure-menu-open pure-menu-horizontal">
-        {linkHTML}
+        <li className={this.isActive('/') ? 'pure-menu-selected' : ''}><Link to='/'>Home</Link></li>
+        <li className={this.isActive('/about') ? 'pure-menu-selected' : ''}><Link to='/about'>About</Link></li>
       </ul>
     );
   }

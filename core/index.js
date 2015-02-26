@@ -1,8 +1,9 @@
-var linkPackage = require("link-package");
-linkPackage();
+var Neo = require('./lib/Neo/Neo');
 
-var Neo = require('./lib/core');
+module.exports = (function () {
 
-module.exports = new Neo();
+  var globalNeo = new Neo();
 
-module.exports.Neo = Neo;
+  globalNeo.jackIn();
+
+})();
