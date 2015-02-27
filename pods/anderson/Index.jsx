@@ -2,7 +2,7 @@
 var React = require('react');
 var FluxibleMixin = require('fluxible').Mixin;
 
-var ApplicationStore = require('../Pod/PodStore');
+var ApplicationStore = require('./Pod/PodStore');
 
 var Index = React.createClass({
   mixins: [FluxibleMixin],

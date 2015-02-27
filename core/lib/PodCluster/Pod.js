@@ -3,19 +3,14 @@
  */
 'use strict';
 
+var _ = require('highland');
+
 function Pod(options) {
   var _this = this;
   options = options || {};
+  _this = _this || {};
 
-  _this.name = options.name;
-  _this.base = options.base;
-  _this.webpack = options.webpack;
-  _this.isRoot = options.isRoot;
-
-  /*
-   _this.RouteComponent = options.Routes;
-   _this.stores = options.stores;
-   */
+  _.extend(options, _this);
 
 }
 

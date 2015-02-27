@@ -3,22 +3,49 @@
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
 require('node-jsx').install({ extension: '.jsx' });
-
+/*
+* React
+* */
 var React = require('react');
 var Router = require('react-router');
 
-
+/*
+* Server
+* */
 var express = require('express');
 var expressState = require('express-state');
-
 var favicon = require('serve-favicon');
 
+/*
+* Util
+* */
 var debug = require('debug')('Example');
+
 
 var navigateAction = require('./actions/navigate');
 var app = require('./app');
 var HtmlComponent = React.createFactory(require('./components/Index.jsx'));
 
+
+var Server = function(neo, navigateAction,app){
+  var _this = this;
+  _this._server = express();
+
+  expressState.extend(_this._server);
+  _this._server.set('state namespace', 'App');
+
+  _this._server.use(favicon(__dirname + '/../favicon.ico'));
+
+  _this._server.use('/public', express.static(__dirname + '/public'));
+
+  _this._server.use(function (req, res, next) {
+
+
+
+  });
+
+
+};
 
 var server = express();
 expressState.extend(server);

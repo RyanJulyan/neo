@@ -10,7 +10,6 @@ function PodCluster(options) {
 };
 
 PodCluster.prototype.registerPod = function (pod) {
-  console.log(pod);
   var _this = this;
   if (!pod.name) {
     throw new Error('Pod must have a name');
