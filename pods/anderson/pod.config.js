@@ -6,7 +6,7 @@
 module.exports = {
   isRoot: true,
   name: 'anderson',
-  base: '/',
+  base: '/anderson',
   webpack: {
     entry: './client.js',
     output: {

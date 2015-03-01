@@ -15,7 +15,7 @@ PodCluster.prototype.registerPod = function (pod) {
     throw new Error('Pod must have a name');
   }
   _this._cluster.push(pod);
-  if (pod.isRoot){
+  if (pod.isRoot) {
     _this._rootPodName = pod.name
   }
 };
@@ -23,9 +23,23 @@ PodCluster.prototype.registerPod = function (pod) {
 PodCluster.prototype.getPod = function (podName) {
   var pod = null;
   this._cluster.forEach(function (p) {
-      if (podName === p.name){
-        pod = p;
-      }
+    if (podName === p.name) {
+      pod = p;
+    }
+  });
+  return pod;
+};
+
+PodCluster.prototype.getPodByBase = function (base, stripSlashes) {
+  var podBase = ''
+  var pod = null;
+  this._cluster.forEach(function (p) {
+    podBase = p.base;
+    if (stripSlashes) podBase = podBase.replace('/', '');
+
+    if (base === podBase) {
+      pod = p;
+    }
   });
   return pod;
 };

@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var ApplicationStore = require('./PodStore');
+var ApplicationStore = require('../../../core/lib/app/AppStore');
 
 var StoreMixin = require('fluxible').StoreMixin;
 var RouteHandler = require('react-router').RouteHandler;

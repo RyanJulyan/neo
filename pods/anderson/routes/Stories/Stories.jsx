@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 
-var About = React.createClass({
+var Story = React.createClass({
   getInitialState: function () {
     return {};
   },
@@ -12,4 +12,4 @@ var About = React.createClass({
   }
 });
 
-module.exports = About;
+module.exports = Story;

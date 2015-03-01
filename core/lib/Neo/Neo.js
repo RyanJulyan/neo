@@ -6,11 +6,9 @@ require('node-jsx').install({extension: '.jsx'});
 /*
  * Utils
  * */
-//var _ = require('lodash');
 var _ = require('highland');
 var nodepath = require('path');
 var loader = require('node-glob-loader');
-
 var Sequence = exports.Sequence || require('sequence').Sequence;
 
 /*
@@ -18,62 +16,64 @@ var Sequence = exports.Sequence || require('sequence').Sequence;
  * */
 var React = require('react');
 var Fluxible = require('fluxible');
-var StoreMixin = require('fluxible').StoreMixin;
-var RouteHandler = require('react-router').RouteHandler;
 
 /*
  * Neo Core
  * */
+//Components
 var Routes = require('../Routes/Routes.jsx');
-var Application = require('../App/App.jsx');
+var Application = require('../app/App.jsx');
+var ApplicationStore = require('../app/AppStore');
+
+//Classes
 var PodCluster = require('../PodCluster/PodCluster');
 var Pod = require('../PodCluster/Pod');
+var Server = require('../server/Server');
 
 function Neo() {
   var _neo = this;
   console.log('new neo');
 
   /*
-   * Private
-   * */
-  _neo._app = {};
-  _neo._server = {};
-  _neo._podCluster = new PodCluster();
-  _neo._pluginChain = {};
-  _neo._global = {};
-
-  /*
    * Public
    * */
   _neo.appPath = nodepath.resolve(process.cwd());
+  _neo.util = require('../util/util');
 
-  _neo.podConfigs = [];
+  _neo.App = {};
+  _neo.PodCluster = new PodCluster();
+
   _neo.routes = [];
   _neo.stores = [];
 
-  _neo.App = {};
-
-  _neo.util = require('../util/util');
-
+  _neo.Server = {};
 
 }
 
 Neo.prototype._init = function (_neo, next) {
-
+  /*
+   * Sequence instances
+   * */
   var initSequence = Sequence.create();
   var podSequence = Sequence.create();
   var appSequence = Sequence.create();
-
+  /*
+   * Load paths
+   * */
   var podConfigsPath = _neo.appPath + '/pods/{folder}/**/pod.config.js';
   var routesPath = _neo.appPath + '/pods/{folder}/**/*Routes.jsx';
   var storesPath = _neo.appPath + '/pods/{folder}/**/*Store.js';
   var podPath = _neo.appPath + '/pods/{folder}/**/*Pod.jsx';
-  var indexPath = _neo.appPath + '/pods/{folder}/**/*Index.jsx';
-
+  var indexPath = _neo.appPath + '/pods/{folder}/**/Index.jsx';
+  /*
+   * current variables
+   * */
   var currPath = '';
   var currPod = {};
   var currPodOptions = {};
-
+  /*
+   * Help method for running async methods in loops in sequences
+   * */
   var seqNext = function (index, length, next) {
     if (index === length) {
       next();
@@ -83,6 +83,9 @@ Neo.prototype._init = function (_neo, next) {
   var podIndex = 0;
 
   initSequence
+    /*
+     * load project pods
+     * */
     .then(function (mainNext) {
       _neo.util.getTopFolderList(_neo.appPath + '/pods/', function (folders) {
         console.log(folders);
@@ -136,13 +139,14 @@ Neo.prototype._init = function (_neo, next) {
                   });
               })
               /*
-              * load pod index component
-              * */
-              .then(function(next, err, configs, routes, stores){
+               * load pod index component
+               * */
+              .then(function (next, err, configs, routes, stores) {
                 var index = {};
                 currPath = indexPath.replace('{folder}', folder);
                 loader.load(currPath, function (indexComponent) {
                   index = indexComponent;
+
                 })
                   .then(function () {
                     console.log(4);
@@ -152,7 +156,7 @@ Neo.prototype._init = function (_neo, next) {
               /*
                * load pod index component
                * */
-              .then(function(next, err, configs, routes, stores, index){
+              .then(function (next, err, configs, routes, stores, index) {
                 var pod = {};
                 currPath = podPath.replace('{folder}', folder);
                 loader.load(currPath, function (podComponent) {
@@ -175,7 +179,7 @@ Neo.prototype._init = function (_neo, next) {
 
                 currPod = new Pod(currPodOptions);
 
-                _neo._podCluster.registerPod(currPod);
+                _neo.PodCluster.registerPod(currPod);
 
                 podIndex++;
                 seqNext(podIndex, folders.length, mainNext);
@@ -188,12 +192,17 @@ Neo.prototype._init = function (_neo, next) {
       });
 
     })
+    /*
+     * init app
+     * */
     .then(function (mainNext) {
       appSequence
-
+        /*
+         * Collect routes and stores from pods for init
+         * */
         .then(function (next) {
           podIndex = 0;
-          var cluster = _neo._podCluster.getCluster();
+          var cluster = _neo.PodCluster.getCluster();
           _(cluster)
             .each(function (pod) {
               //console.log(pod);
@@ -212,12 +221,17 @@ Neo.prototype._init = function (_neo, next) {
 
             });
         })
+        /*
+         * new instance of app
+         * */
         .then(function (next) {
           console.log('app config');
 
           _neo.App = new Fluxible({
             appComponent: Routes(_neo.routes, Application)
           });
+
+          _neo.App.registerStore(ApplicationStore);
 
           _(_neo.stores)
             .each(function (store) {
@@ -227,17 +241,19 @@ Neo.prototype._init = function (_neo, next) {
           next();
         })
       ;
-
+      /*
+       * next main sequence
+       * */
       console.log(_neo);
       mainNext();
+      next();
     })
   ;
 
-  next();
+
 
 }
 ;
-
 
 Neo.prototype.jackIn = function () {
   var _neo = this;
@@ -247,6 +263,12 @@ Neo.prototype.jackIn = function () {
     .then(function (next) {
       _neo._init(_neo, next)
     })
+
+  .then(function(next){
+      var action = require('../app/actions/navigate');
+      _neo.Server = new Server(_neo,action);
+      _neo.Server.boot(next);
+    });
 
 };
 

@@ -8,8 +8,8 @@
 'use strict';
 var createStore = require('fluxible/utils/createStore');
 
-var ApplicationStore = createStore({
-  storeName: 'ApplicationStore',
+var PodStore = createStore({
+  storeName: 'PodStore',
   handlers: {
     'CHANGE_ROUTE_SUCCESS': 'handleNavigate'
   },
@@ -52,4 +52,4 @@ var ApplicationStore = createStore({
 });
 
 
-module.exports = ApplicationStore;
+module.exports = PodStore;
