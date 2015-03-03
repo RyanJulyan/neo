@@ -30,7 +30,13 @@ var PodCluster = require('../PodCluster/PodCluster');
 var Pod = require('../PodCluster/Pod');
 var Server = require('../server/Server');
 
-function Neo() {
+//Utils
+var gulpack = require('gulp-webpack');
+var webpack = require('webpack');
+var source = require('vinyl-source-stream');
+var gutil = require('gulp-util');
+
+var Neo = module.exports = function Neo() {
   var _neo = this;
   console.log('new neo');
 
@@ -48,7 +54,7 @@ function Neo() {
 
   _neo.Server = {};
 
-}
+};
 
 Neo.prototype._init = function (_neo, next) {
   /*
@@ -240,6 +246,32 @@ Neo.prototype._init = function (_neo, next) {
 
           next();
         })
+        /*
+         * Neopack
+         * */
+        .then(function (next) {
+          var baseConfig = require('../neopack/neopack.config.js');
+          var devConfig = Object.create(baseConfig);
+
+          console.log(require('../client/client',{app: _neo.App, navigateAction: require('../app/AppAction')} ));
+
+          _(_neo.PodCluster.getCluster())
+            //.pipe(source())
+            .pipe(gulpack(devConfig, webpack, function (err, stats) {
+              /* Use stats to do more things if needed */
+              if (err) throw new gutil.PluginError("webpack:dev", err);
+              gutil.log("[webpack:dev]", stats.toString({
+                colors: true
+              }));
+              callback();
+            }))
+            .pipe(gulp.dest('../../../pods/anderson/public/app.js'))
+            .pipe(function () {
+              console.log('end stream');
+              next()
+            });
+
+        })
       ;
       /*
        * next main sequence
@@ -249,7 +281,6 @@ Neo.prototype._init = function (_neo, next) {
       next();
     })
   ;
-
 
 
 }
@@ -264,12 +295,12 @@ Neo.prototype.jackIn = function () {
       _neo._init(_neo, next)
     })
 
-  .then(function(next){
+    .then(function (next) {
       var action = require('../app/actions/navigate');
-      _neo.Server = new Server(_neo,action);
+      _neo.Server = new Server(_neo, action);
       _neo.Server.boot(next);
     });
 
 };
 
-module.exports = Neo;
+Neo.extend = require('class-extend').extend;
