@@ -7,7 +7,7 @@ var Home = React.createClass({
   },
   render: function() {
     return (
-      <p>Welcome to the site!</p>
+      <p>Welcome to the site! {this.state.currentRoute}</p>
     );
   }
 });

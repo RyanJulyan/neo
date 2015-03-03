@@ -154,7 +154,7 @@ Neo.prototype._init = function (_neo, next) {
                   });
               })
               /*
-               * load pod index component
+               * load Pod component
                * */
               .then(function (next, err, configs, routes, stores, index) {
                 var pod = {};
@@ -168,7 +168,7 @@ Neo.prototype._init = function (_neo, next) {
                   });
               })
               /*
-               * Init Neo app
+               * Init Neo Pod
                * */
               .then(function (next, err, configs, routes, stores, index, pod) {
                 currPodOptions = configs;
@@ -225,7 +225,7 @@ Neo.prototype._init = function (_neo, next) {
          * new instance of app
          * */
         .then(function (next) {
-          console.log('app config');
+          console.log('app routes', _neo.routes);
 
           _neo.App = new Fluxible({
             appComponent: Routes(_neo.routes, Application)

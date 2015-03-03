@@ -2,23 +2,13 @@
 
 var React = require('react');
 
-var ApplicationStore = require('../../../core/lib/app/AppStore');
-
-var StoreMixin = require('fluxible').StoreMixin;
 var RouteHandler = require('react-router').RouteHandler;
+var FluxibleMixin = require('fluxible').Mixin;
 
-var Application = React.createClass({
-  mixins: [StoreMixin],
-  statics: {
-    storeListeners: [ApplicationStore]
-  },
-
+var Pod = React.createClass({
+  mixins: [FluxibleMixin],
   getInitialState: function () {
-    return this.getStore(ApplicationStore).getState();
-  },
-  onChange: function () {
-    var state = this.getStore(ApplicationStore).getState();
-    this.setState(state);
+    return {};
   },
   render: function () {
     return (
@@ -29,4 +19,4 @@ var Application = React.createClass({
   }
 });
 
-module.exports = Application;
+module.exports = Pod;

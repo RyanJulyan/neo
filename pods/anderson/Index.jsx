@@ -4,7 +4,8 @@
  */
 'use strict';
 var React = require('react');
-
+/*var ApplicationStore = '../../core/lib/app/AppStore';
+var FluxibleMixin = require('fluxible').Mixin;*/
 /**
  * React class to handle the rendering of the HTML head section
  *
@@ -12,6 +13,7 @@ var React = require('react');
  * @constructor
  */
 var Html = React.createClass({
+  //mixins: [FluxibleMixin],
   /**
    * Refer to React documentation render
    *
@@ -32,6 +34,7 @@ var Html = React.createClass({
         </body>
         <script dangerouslySetInnerHTML={{__html: this.props.state}}></script>
         <script src="/public/js/client.js" defer></script>
+
       </html>
     );
   }

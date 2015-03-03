@@ -8,43 +8,35 @@ var createStore = require('fluxible/utils/createStore');
 var ApplicationStore = createStore({
   storeName: 'ApplicationStore',
   handlers: {
-    'CHANGE_ROUTE_SUCCESS': 'handleNavigate'
+    'CHANGE_ROUTE': 'handleNavigate'
   },
   initialize: function (dispatcher) {
-    this.currentPage = null;
+    this.pageTitle = '';
     this.currentRoute = null;
   },
   handleNavigate: function (route) {
-    var pageName = route.config.page;
-
-    if (pageName === this.getCurrentPageName()) {
+    if (this.currentRoute && route.path === this.currentRoute.path) {
       return;
     }
-
-    this.currentPageName = pageName;
-    this.currentPage = page;
+    this.pageTitle = route.path;
     this.currentRoute = route;
-    this.emit('change');
+    this.emitChange();
   },
-  getCurrentPageName: function () {
-    return this.currentPageName;
+  getPageTitle: function () {
+    return this.pageTitle;
   },
   getState: function () {
     return {
-      currentPageName: this.currentPageName,
-      currentPage: this.currentPage,
-      pages: this.pages,
-      route: this.currentRoute
+      route: this.currentRoute,
+      pageTitle: this.pageTitle
     };
   },
   dehydrate: function () {
     return this.getState();
   },
   rehydrate: function (state) {
-    this.currentPageName = state.currentPageName;
-    this.currentPage = state.currentPage;
-    this.pages = state.pages;
     this.currentRoute = state.route;
+    this.pageTitle = state.pageTitle
   }
 });
 

@@ -21,8 +21,12 @@ PodCluster.prototype.registerPod = function (pod) {
 };
 
 PodCluster.prototype.getPod = function (podName) {
+  console.log('looking for pod', podName);
   var pod = null;
   this._cluster.forEach(function (p) {
+    if (podName.length === 0){
+      if (p.isRoot) pod = p;
+    }else
     if (podName === p.name) {
       pod = p;
     }

@@ -4,11 +4,11 @@ var React = require('react');
 
 var ApplicationStore = require('./AppStore');
 
-var StoreMixin = require('fluxible').Mixin;
+var FluxibleMixin = require('fluxible').Mixin;
 var RouteHandler = require('react-router').RouteHandler;
 
 var Application = React.createClass({
-  mixins: [StoreMixin],
+  mixins: [FluxibleMixin],
   statics: {
     storeListeners: [ApplicationStore]
   },

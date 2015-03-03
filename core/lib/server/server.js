@@ -13,7 +13,7 @@ var Router = require('react-router');
  * Server
  * */
 var express = require('express');
-var expressState = require('express-state');
+var serialize = require('serialize-javascript');
 var favicon = require('serve-favicon');
 
 /*
@@ -26,7 +26,6 @@ var Server = function (neo, navigateAction) {
   var _this = this;
   _this._neo = neo;
   _this._server = express();
-  expressState.extend(_this._server);
 
   _this._server.set('state namespace', 'App');
 
@@ -56,7 +55,7 @@ var Server = function (neo, navigateAction) {
        * App instance
        * */
       var app = _this._neo.App;
-      console.log('route app', HtmlComponent);
+      console.log('route app', app);
 
       var context = app.createContext();
 
@@ -71,25 +70,19 @@ var Server = function (neo, navigateAction) {
          * */
         context.executeAction(navigateAction, state, function () {
           debug('Exposing context state');
-          //expose state to browser
-          res.expose(app.dehydrate(context), 'App');
+          var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';console.log('+serialize(req.path)+')';
+
           debug('Rendering Application component into html');
+          React.withContext(context.getComponentContext(), function () {
+            var html = React.renderToStaticMarkup(HtmlComponent({
+              title: pod.name,
+              state: exposed,
+              markup: React.renderToString(React.createFactory(Handler)())
+            }));
 
-          /*
-           * Render app
-           * */
-          var html = React.renderToStaticMarkup(HtmlComponent({
-            state: res.locals.state,
-            markup: React.renderToString(Handler({
-              context: context.getComponentContext()
-            }))
-          }));
-
-          console.log('route html', html);
-
-          debug('Sending markup');
-          res.write(html);
-          res.end();
+            debug('Sending markup');
+            res.send(html);
+          });
         });
       });
     }
