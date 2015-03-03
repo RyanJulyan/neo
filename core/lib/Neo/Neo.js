@@ -33,8 +33,8 @@ var Server = require('../server/Server');
 //Utils
 var gulpack = require('gulp-webpack');
 var webpack = require('webpack');
-var source = require('vinyl-source-stream');
 var gutil = require('gulp-util');
+var vfsFake = require('vinyl-fs-fake');
 
 var Neo = module.exports = function Neo() {
   var _neo = this;
@@ -253,10 +253,14 @@ Neo.prototype._init = function (_neo, next) {
           var baseConfig = require('../neopack/neopack.config.js');
           var devConfig = Object.create(baseConfig);
 
-          console.log(require('../client/client',{app: _neo.App, navigateAction: require('../app/AppAction')} ));
+          //console.log(require('../client/client',{app: _neo.App, navigateAction: require('../app/AppAction')} ));
+          var options = {
+            JS_SRC: [
+              {path: 'client.js', contents: new Buffer('...')}
+            ]
+          };
 
-          _(_neo.PodCluster.getCluster())
-            //.pipe(source())
+          vfsFake.src(options.JS_SRC)
             .pipe(gulpack(devConfig, webpack, function (err, stats) {
               /* Use stats to do more things if needed */
               if (err) throw new gutil.PluginError("webpack:dev", err);

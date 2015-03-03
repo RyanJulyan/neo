@@ -34,12 +34,16 @@
     "debug": "^2.1.1",
     "express": "^4.12.0",
     "express-state": "^1.2.0",
+    "extract-text-webpack-plugin": "^0.3.8",
+    "file-loader": "^0.8.1",
     "fluxible": "^0.2.2",
     "glob": "^4.4.0",
     "gulp": "^3.8.11",
     "gulp-util": "^3.0.4",
     "gulp-webpack": "^1.2.0",
     "highland": "^2.4.0",
+    "less": "^2.2.0",
+    "less-loader": "^2.0.0",
     "lodash": "^3.3.0",
     "node-dir": "^0.1.6",
     "node-glob-loader": "0.0.15",
@@ -48,13 +52,10 @@
     "react-router": "^0.12.2",
     "sequence": "^3.0.0",
     "serve-favicon": "^2.2.0",
-    "vinyl-source-stream": "^1.0.0",
-    "webpack": "^1.6.0",
     "style-loader": "^0.8.3",
     "url-loader": "^0.5.5",
-    "less": "^2.2.0",
-    "less-loader": "^2.0.0",
-    "extract-text-webpack-plugin": "^0.3.8",
-    "file-loader": "^0.8.1"
+    "vinyl-fs-fake": "^1.0.0",
+    "vinyl-source-stream": "^1.0.0",
+    "webpack": "^1.6.0"
   }
 }
