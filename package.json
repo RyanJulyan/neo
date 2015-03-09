@@ -45,7 +45,9 @@
     "node-jsx": "^0.12.4",
     "promised-io": "^0.3.4",
     "react": "^0.12.2",
-    "serialize-javascript": "^1.0.0"
+    "react-router": "^0.12.4",
+    "serialize-javascript": "^1.0.0",
+    "vinyl": "^0.4.6"
   },
   "devDependencies": {
     "css-loader": "^0.9.1",

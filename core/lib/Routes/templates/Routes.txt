@@ -1,0 +1,23 @@
+'use strict';
+
+
+var React = require('react');
+var Route = require('react-router').Route;
+var DefaultRoute = require('react-router').DefaultRoute;
+
+var Application = require('../core/lib/app/App.jsx');
+
+var routes = [];
+<%_.forEach(routes, function(route){ %>
+routes.push(require('<%= route %>'));
+<%});%>
+
+console.log('routes', routes);
+
+var routes = (
+    <Route name="app" path="/" handler={Application}>
+    {routes}
+    </Route>
+  );
+
+module.exports = routes;

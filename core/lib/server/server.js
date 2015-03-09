@@ -39,7 +39,6 @@ var Server = function (neo, navigateAction) {
   _this._server.use(function (req, res, next) {
     console.log('here', req.path);
     if (req.path.indexOf('/public/') > -1) {
-      console.log();
       next();
     } else {
       /*

@@ -4,6 +4,7 @@ var React = require('react');
 
 var RouteHandler = require('react-router').RouteHandler;
 var FluxibleMixin = require('fluxible').Mixin;
+var Nav = require('../components/Nav/Nav.jsx')
 
 var Pod = React.createClass({
   mixins: [FluxibleMixin],
@@ -13,6 +14,7 @@ var Pod = React.createClass({
   render: function () {
     return (
       <div>
+        <Nav />
         <RouteHandler />
       </div>
     );

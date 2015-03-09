@@ -31,10 +31,22 @@ var Pod = require('../PodCluster/Pod');
 var Server = require('../server/Server');
 
 //Utils
+var gulp = require('gulp');
+var tap = require('gulp-tap');
+
+var template = require('gulp-template');
+var rename = require('gulp-rename');
+
 var gulpack = require('gulp-webpack');
 var webpack = require('webpack');
+
 var gutil = require('gulp-util');
+
 var vfsFake = require('vinyl-fs-fake');
+var source = require('vinyl-source-stream');
+var File = require('vinyl');
+var fs = require('vinyl-fs');
+var gulpfile = require('gulp-file');
 
 var Neo = module.exports = function Neo() {
   var _neo = this;
@@ -49,8 +61,13 @@ var Neo = module.exports = function Neo() {
   _neo.App = {};
   _neo.PodCluster = new PodCluster();
 
+  _neo.paths = {};
+
   _neo.routes = [];
+  _neo.paths.routes = [];
+
   _neo.stores = [];
+  _neo.paths.stores = [];
 
   _neo.Server = {};
 
@@ -87,6 +104,7 @@ Neo.prototype._init = function (_neo, next) {
   };
 
   var podIndex = 0;
+  var options = {};
 
   initSequence
     /*
@@ -104,88 +122,94 @@ Neo.prototype._init = function (_neo, next) {
                * load and extend pod configs
                * */
               .then(function (next) {
-                var configs = {};
+                options.configs = {};
                 currPath = podConfigsPath.replace('{folder}', folder);
                 loader.load(currPath, function (config) {
-                  configs = config;
+                  options.configs = config;
                 })
                   .then(function () {
                     console.log('current folder', folder);
                     console.log(1);
 
-                    next(null, configs);
+                    next(null, options);
                   });
               })
               /*
                * load pod routes
                * */
-              .then(function (next, err, configs) {
-                var routes = [];
+              .then(function (next, err, options) {
+                options.routes = [];
                 currPath = routesPath.replace('{folder}', folder);
-                loader.load(currPath, function (route) {
-                  routes.push(route)
+                loader.load(currPath, function (route, routePath) {
+                  options.routes.push(route);
+                  _neo.paths.routes.push(routePath);
                 })
                   .then(function () {
                     console.log(2);
-                    next(null, configs, routes);
+                    next(null, options);
                   })
               })
               /*
                * load pod stores
                * */
-              .then(function (next, err, configs, routes) {
-                var stores = [];
+              .then(function (next, err, options) {
+                options.stores = [];
                 currPath = storesPath.replace('{folder}', folder);
-                loader.load(currPath, function (store) {
-                  stores.push(store);
+                loader.load(currPath, function (store, storePath) {
+                  options.stores.push(store);
+                  _neo.paths.stores.push(storePath);
                 })
                   .then(function () {
                     console.log(3);
-                    next(null, configs, routes, stores);
+                    next(null, options);
                   });
               })
               /*
                * load pod index component
                * */
-              .then(function (next, err, configs, routes, stores) {
-                var index = {};
+              .then(function (next, err, options) {
+                options.index = {};
                 currPath = indexPath.replace('{folder}', folder);
                 loader.load(currPath, function (indexComponent) {
-                  index = indexComponent;
+                  options.index = indexComponent;
 
                 })
                   .then(function () {
                     console.log(4);
-                    next(null, configs, routes, stores, index);
+                    next(null, options);
                   });
               })
               /*
                * load Pod component
                * */
-              .then(function (next, err, configs, routes, stores, index) {
-                var pod = {};
+              .then(function (next, err, options) {
+                options.pod = {};
                 currPath = podPath.replace('{folder}', folder);
                 loader.load(currPath, function (podComponent) {
-                  pod = podComponent;
+                  options.pod = podComponent;
                 })
                   .then(function () {
                     console.log(5);
-                    next(null, configs, routes, stores, index, pod);
+                    next(null, options);
                   });
               })
               /*
                * Init Neo Pod
                * */
-              .then(function (next, err, configs, routes, stores, index, pod) {
-                currPodOptions = configs;
-                currPodOptions.routes = routes;
-                currPodOptions.stores = stores;
-                currPodOptions.indexComponent = index;
-                currPodOptions.podComponent = pod;
+              .then(function (next, err, options) {
 
-                currPod = new Pod(currPodOptions);
+                currPodOptions = options.configs;
+                currPodOptions.routes = options.routes;
+                currPodOptions.stores = options.stores;
+                currPodOptions.indexComponent = options.index;
+                currPodOptions.podComponent = options.pod;
+                try {
+                  currPod = new Pod(currPodOptions);
 
-                _neo.PodCluster.registerPod(currPod);
+                  _neo.PodCluster.registerPod(currPod);
+                } catch (e) {
+                  console.log('error:', e);
+                }
 
                 podIndex++;
                 seqNext(podIndex, folders.length, mainNext);
@@ -248,32 +272,87 @@ Neo.prototype._init = function (_neo, next) {
         })
         /*
          * Neopack
+         *
+         * WE NEED A BETTER SOLUTION
+         *
+         * Generate Route.jsx file for webpack
          * */
         .then(function (next) {
+
+          gulp.src('./core/lib/Routes/templates/Routes.txt')
+            .pipe(tap(function (file) {
+              console.log(file.path)
+            }))
+            .pipe(template(_neo.paths))
+            .pipe(rename('Routes.jsx'))
+            .pipe(gulp.dest('./generated/'))
+            .on('finish',function(e){
+              gutil.log('gulp finished');
+              next();
+            })
+          ;
+
+        })
+      /*
+       * Generate app.js file for webpack
+       * */
+        .then(function (next) {
+
+          gulp.src('./core/lib/app/templates/app.txt')
+            .pipe(tap(function (file) {
+              console.log(file.path)
+            }))
+            .pipe(template(_neo.paths))
+            .pipe(rename('app.js'))
+            .pipe(gulp.dest('./generated/'))
+            .on('finish',function(e){
+              gutil.log('gulp finished');
+              next();
+            })
+          ;
+
+        })
+        /*
+         * Generate client.js file per pod for webpack
+         * */
+        .then(function (next) {
+
+          gulp.src('./core/lib/client/templates/client.txt')
+            .pipe(tap(function (file) {
+              console.log(file.path)
+            }))
+            .pipe(template(_neo.paths))
+            .pipe(rename('client.js'))
+            .pipe(gulp.dest('./pods/anderson/generated/'))
+            .on('finish',function(e){
+              gutil.log('gulp finished');
+              next();
+            })
+          ;
+
+        })
+        .then(function (next) {
+
           var baseConfig = require('../neopack/neopack.config.js');
+          var pod = _neo.PodCluster.getPod('anderson');
+          baseConfig = _.extend(pod.webpack,baseConfig);
+          console.log(baseConfig);
+
           var devConfig = Object.create(baseConfig);
 
-          //console.log(require('../client/client',{app: _neo.App, navigateAction: require('../app/AppAction')} ));
-          var options = {
-            JS_SRC: [
-              {path: 'client.js', contents: new Buffer('...')}
-            ]
-          };
+          webpack(devConfig, function (err, stats) {
+            if (err) throw new gutil.PluginError("webpack:dev", err);
+            gutil.log("[webpack:dev]", stats.toString({
+              colors: true
+            }));
+            next();
+          });
 
-          vfsFake.src(options.JS_SRC)
-            .pipe(gulpack(devConfig, webpack, function (err, stats) {
-              /* Use stats to do more things if needed */
-              if (err) throw new gutil.PluginError("webpack:dev", err);
-              gutil.log("[webpack:dev]", stats.toString({
-                colors: true
-              }));
-              callback();
-            }))
-            .pipe(gulp.dest('../../../pods/anderson/public/app.js'))
-            .pipe(function () {
-              console.log('end stream');
-              next()
-            });
+          //gulp.src('./pods/anderson/generated/client.js')
+          //.pipe(gulpack(devConfig, webpack, function(){
+          //
+          //  }))
+
 
         })
       ;

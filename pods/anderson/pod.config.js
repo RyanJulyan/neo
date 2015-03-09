@@ -8,9 +8,9 @@ module.exports = {
   name: 'anderson',
   base: '/anderson',
   webpack: {
-    entry: './client.js',
+    entry: './pods/anderson/generated/client.js',
     output: {
-      path: './public/',
+      path: './pods/anderson/public/',
       publicPath: '/public/',
       filename: '[name].js',
       chunkFilename: '[id].js'

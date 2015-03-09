@@ -1,0 +1,11 @@
+'use strict';
+var Fluxible = require('fluxible');
+
+var app = new Fluxible({
+    component: require('./Routes.jsx')
+});
+app.registerStore(require('../core/lib/app/AppStore'));
+<%_.forEach(stores, function(store){ %>
+app.registerStore(require('<%=store%>'));
+<%});%>
+module.exports = app;

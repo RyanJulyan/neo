@@ -1,4 +1,4 @@
-/**
+  /**
  * Created by Gloo on 2015-03-03.
  */
 'use strict';
@@ -22,7 +22,7 @@ var config = {
       /*
        * Load JSX
        * */
-      { test: /\.jsx$/, loader: 'jsx-loader' },
+      { test: /\.jsx$/, loader: 'jsx-loader?harmony' },
       /*
        * Extract css files
        * */
