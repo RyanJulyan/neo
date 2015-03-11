@@ -12,8 +12,8 @@ var Nav = React.createClass({
   render: function() {
     return (
       <ul className="pure-menu pure-menu-open pure-menu-horizontal">
-        <li className={this.isActive('/anderson/home') ? 'pure-menu-selected' : ''}><Link to='/anderson/home'>Home</Link></li>
-        <li className={this.isActive('/anderson/story') ? 'pure-menu-selected' : ''}><Link to='/anderson/story'>Story</Link></li>
+        <li className={this.isActive('/') ? 'pure-menu-selected' : ''}><Link to='/'>Home</Link></li>
+        <li className={this.isActive('/story') ? 'pure-menu-selected' : ''}><Link to='/story'>Story</Link></li>
       </ul>
     );
   }

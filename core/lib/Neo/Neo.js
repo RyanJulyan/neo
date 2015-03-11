@@ -58,7 +58,9 @@ var Neo = module.exports = function Neo() {
   _neo.appPath = nodepath.resolve(process.cwd());
   _neo.util = require('../util/util');
 
+  _neo.config = {};
   _neo.App = {};
+
   _neo.PodCluster = new PodCluster();
 
   _neo.paths = {};
@@ -73,7 +75,7 @@ var Neo = module.exports = function Neo() {
 
 };
 
-Neo.prototype._init = function (_neo, next) {
+Neo.prototype._init = function (_neo, nextInit) {
   /*
    * Sequence instances
    * */
@@ -254,26 +256,27 @@ Neo.prototype._init = function (_neo, next) {
         /*
          * new instance of app
          * */
-        .then(function (next) {
-          console.log('app routes', _neo.routes);
+        /*
+         .then(function (next) {
+         console.log('app routes', _neo.routes);
 
-          _neo.App = new Fluxible({
-            appComponent: Routes(_neo.routes, Application)
-          });
+         _neo.App = new Fluxible({
+         appComponent: Routes(_neo.routes, Application)
+         });
 
-          _neo.App.registerStore(ApplicationStore);
+         _neo.App.registerStore(ApplicationStore);
 
-          _(_neo.stores)
-            .each(function (store) {
-              _neo.App.registerStore(store);
-            });
+         _(_neo.stores)
+         .each(function (store) {
+         _neo.App.registerStore(store);
+         });
 
-          next();
-        })
+         next();
+         })*/
         /*
          * Neopack
          *
-         * WE NEED A BETTER SOLUTION
+         * TODO: WE NEED A BETTER SOLUTION THAN GENERATING PHYSICAL FILES
          *
          * Generate Route.jsx file for webpack
          * */
@@ -286,16 +289,16 @@ Neo.prototype._init = function (_neo, next) {
             .pipe(template(_neo.paths))
             .pipe(rename('Routes.jsx'))
             .pipe(gulp.dest('./generated/'))
-            .on('finish',function(e){
-              gutil.log('gulp finished');
+            .on('finish', function (e) {
+              gutil.log('gulp finished generating global Routes');
               next();
             })
           ;
 
         })
-      /*
-       * Generate app.js file for webpack
-       * */
+        /*
+         * Generate app.js file for webpack
+         * */
         .then(function (next) {
 
           gulp.src('./core/lib/app/templates/app.txt')
@@ -305,13 +308,14 @@ Neo.prototype._init = function (_neo, next) {
             .pipe(template(_neo.paths))
             .pipe(rename('app.js'))
             .pipe(gulp.dest('./generated/'))
-            .on('finish',function(e){
-              gutil.log('gulp finished');
+            .on('finish', function (e) {
+              gutil.log('gulp finished generating global App');
               next();
             })
           ;
 
         })
+
         /*
          * Generate client.js file per pod for webpack
          * */
@@ -324,18 +328,28 @@ Neo.prototype._init = function (_neo, next) {
             .pipe(template(_neo.paths))
             .pipe(rename('client.js'))
             .pipe(gulp.dest('./pods/anderson/generated/'))
-            .on('finish',function(e){
+            .on('finish', function (e) {
               gutil.log('gulp finished');
               next();
             })
           ;
 
         })
+        /*
+         * Add generated app to Neo instance
+         * */
+        .then(function(next){
+          _neo.App = require(_neo.appPath + '/generated/app.js');
+          next();
+        })
+        /*
+         * Run webpack with generated files
+         * */
         .then(function (next) {
 
           var baseConfig = require('../neopack/neopack.config.js');
           var pod = _neo.PodCluster.getPod('anderson');
-          baseConfig = _.extend(pod.webpack,baseConfig);
+          baseConfig = _.extend(pod.webpack, baseConfig);
           console.log(baseConfig);
 
           var devConfig = Object.create(baseConfig);
@@ -346,25 +360,19 @@ Neo.prototype._init = function (_neo, next) {
               colors: true
             }));
             next();
+
+
+            /*
+             * next main sequence
+             * */
+            console.log(_neo);
+            mainNext();
+            nextInit();
           });
 
-          //gulp.src('./pods/anderson/generated/client.js')
-          //.pipe(gulpack(devConfig, webpack, function(){
-          //
-          //  }))
+        });
 
-
-        })
-      ;
-      /*
-       * next main sequence
-       * */
-      console.log(_neo);
-      mainNext();
-      next();
-    })
-  ;
-
+    });
 
 }
 ;

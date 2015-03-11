@@ -12,8 +12,8 @@ var Story = require('./Stories/Stories.jsx');
 var config = require('../pod.config');
 
 var routes = (
-  <Route key="1" name="anderson" path="/anderson" handler={Application}>
-    <Route name="story" path="story" handler={Story}/>
+  <Route key="1" name="anderson" path="/" handler={Application}>
+    <Route name="story" path="/story" handler={Story}/>
     <DefaultRoute name="home" handler={Home}/>
   </Route>
   );

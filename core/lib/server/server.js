@@ -48,13 +48,13 @@ var Server = function (neo, navigateAction) {
       podName = podName.substr(0, podName.indexOf('/'));
       console.log('podname', podName);
       var pod = _this._neo.PodCluster.getPod(podName, true);
-      console.log('pod', pod);
+      //console.log('pod', pod);
       var HtmlComponent = React.createFactory(pod.indexComponent);
       /*
        * App instance
        * */
       var app = _this._neo.App;
-      console.log('route app', app);
+      //console.log('route app', app);
 
       var context = app.createContext();
 
@@ -68,8 +68,8 @@ var Server = function (neo, navigateAction) {
          * Execute Nav action
          * */
         context.executeAction(navigateAction, state, function () {
-          debug('Exposing context state');
-          var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';console.log('+serialize(req.path)+')';
+          console.log('Exposing context state');
+          var exposed = 'window.App=' + serialize(app.dehydrate(context)) + ';';
 
           debug('Rendering Application component into html');
           React.withContext(context.getComponentContext(), function () {
@@ -79,7 +79,7 @@ var Server = function (neo, navigateAction) {
               markup: React.renderToString(React.createFactory(Handler)())
             }));
 
-            debug('Sending markup');
+            console.log('Sending markup', html);
             res.send(html);
           });
         });
@@ -87,7 +87,7 @@ var Server = function (neo, navigateAction) {
     }
   });
 
-  _this.port = process.env.PORT || 3000;
+  _this.port = process.env.PORT || 8000;
 
 };
 
