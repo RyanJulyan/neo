@@ -11,6 +11,7 @@
 var Twitter = require('twitter'),
 	db = require('./data/db'),
 	fs = require('fs'),
+    sinceId = "0",
 	express = require('express'),
 	app = express(),
 	server = require('http').createServer(app),
@@ -91,13 +92,16 @@ function getByHashtag(searchUserHandler, hashtagToSearchFor, numberOfRequestedTw
 
   console.log("------hashtagsToSearchFor------");
   console.log(hashtagsToSearchFor);
-  
-	client.get('search/tweets.json', {q: 'to:'+searchUserHandler, count: numberOfRequestedTweets}, function(err, tweets, response){
+  console.log("-------------sinceId-------------");
+  console.log(sinceId);
+	client.get('search/tweets.json', {since_id: sinceId, q: 'to:'+searchUserHandler, count: numberOfRequestedTweets}, function(err, tweets, response){
 		if(err){
 			console.log(err);
 		}
 		else if(tweets){ // If tweets returned.
-			var newTweets = {};
+      sinceId = tweets.search_metadata.max_id_str;
+      
+      var newTweets = {};
 			
 			newTweets = {
 				user: config.user,
@@ -106,14 +110,12 @@ function getByHashtag(searchUserHandler, hashtagToSearchFor, numberOfRequestedTw
 				returnedData: tweets
 			};
 			
-			console.log("---------newTweets---------");
-			console.log(newTweets);
-			
 			db.upsertNewTweets(newTweets, function(err, dbData){
 				if(err){
 					console.log(err);
 				}
 				else{
+          
 					// Loop Through tweets
 					for(tweet in tweets.statuses){
 						// Check if tweet has hashtag
@@ -200,4 +202,4 @@ function searchTwitter(){
     init(config.repeatInterval);
 }
 // Run the loop
-init();
+init(); // don't pass the parameters, so it runs first time
