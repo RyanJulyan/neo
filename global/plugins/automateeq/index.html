@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Automatweeq | Twitter Auto Reply</title>
+</head>
+
+<body>
+<div id="content">
+Loading Config.....
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var socket = io.connect();
+var config = {};
+socket.on('load config', function(data){
+	config = data;
+
+	displayConfig();
+});
+function displayConfig(){
+	document.getElementById("content").innerHTML = '';
+	
+	var displayContent = '<h1>Please Input Your Data</h1><br /><strong>NOTE:</strong><ul><li><strong>user:</strong> is The Handler you wish to find tweets sent to</li><li><strong>repeatInterval:</strong> is in min</li><li><strong>numberOfRequestedTweets:</strong> May not return that many - It depends on how many people have sent tweets to the handeler</li><li><strong>hashtags:</strong> must exculde #</li><ul><br/><form name="campaignDetails">';
+	
+	for(key in config){
+		if(key !="hashtagsToReplyTo"){
+			displayContent += '<label style="font-size: 18px; font-weight: bold;" for="'+key+'">' + key + ': </label><br /><input style="margin-bottom:20px; width: 80%; font-size:15px;" value="'+config[key]+'" type="text" id="' + key + '"/><br />';
+		}
+	}
+	
+	displayContent +='</form><input style="font-size: 18px; font-weight: bold; width:80%; padding:10px;" type="button" value="Save Campaign" onclick="updateObject(\'campaignDetails\', config)"/><br /><br /><form name="hashTagDetails">';
+	for(obj in config.hashtagsToReplyTo){
+		for(objKey in config.hashtagsToReplyTo[obj]){
+			displayContent +='<label style="font-size: 18px; font-weight: bold;" for="'+objKey+'">'+objKey+': </label><br /><input style="margin-bottom:20px; width: 80%; font-size:15px;" value="'+config.hashtagsToReplyTo[obj][objKey]+'" type="text" id="' + objKey + '"/><br />';
+		}
+	}
+	displayContent +='<input style="font-size: 18px; font-weight: bold; float:right; margin-right:20%;" type="button" onclick="addBlankhashtagsToReplyTo();" value="addHashtag"/><br/>';
+	displayContent +='</form><br /><input style="font-size: 18px; font-weight: bold; width:80%; padding:10px;" type="button" value="Save HashTag Data" onclick="updateObject(\'hashTagDetails\', config.hashtagsToReplyTo)"/><br /><br />';
+	document.getElementById("content").innerHTML = displayContent;
+}
+
+function addBlankhashtagsToReplyTo(){
+	if(config.hashtagsToReplyTo[(config.hashtagsToReplyTo.length -1)].hashtag != "" ){
+		config.hashtagsToReplyTo.push({"hashtag":"", "replyTweet": ""});
+	}
+	displayConfig();
+}
+function updateObject(formName, objectToUpdate){
+	if((objectToUpdate.length) > 0){
+		var dynamicOptions = [];
+		
+		for(i=0; i<document[formName].elements.length-1; i = i + 2){
+			var fieldName = document[formName].elements[i].id;
+			var fieldValue = document[formName].elements[i].value;
+			
+			var fieldName2 = document[formName].elements[i+1].id;
+			var fieldValue2 = document[formName].elements[i+1].value;
+            
+            dynamicOptions[i/2] = {};
+            dynamicOptions[i/2][fieldName] = fieldValue;
+            dynamicOptions[i/2][fieldName2] = fieldValue2;
+		}
+		
+		for(var i = 0; i< objectToUpdate.length; i++){
+			objectToUpdate[i] = dynamicOptions[i];
+		}
+		
+	}
+	else{
+		
+		var dynamicOptions = {};
+		
+		for(i=0; i<document[formName].elements.length; i++){
+			var fieldName = document[formName].elements[i].id;
+			var fieldValue = document[formName].elements[i].value;
+			
+			dynamicOptions[fieldName] = fieldValue;
+		}
+	
+		for(key in dynamicOptions){
+			objectToUpdate[key] = dynamicOptions[key];
+		}
+		
+	}
+	console.log(config);
+	console.log("Emit Socket");
+	socket.emit('save config', config, function(data){
+        alert(data);
+    });
+}
+</script>
+</body>
+</html>

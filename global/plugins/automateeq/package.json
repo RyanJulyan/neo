@@ -1,0 +1,22 @@
+{
+  "name": "automatweeq",
+  "version": "1.0.0",
+  "description": "automatweeq is an automatic twitter crawler, initial intent is to reply to specific tweets automatically",
+  "main": "autoReplyToTweet.js",
+  "scripts": {},
+  "repository": {},
+  "keywords": [
+    "automatic tweet",
+    "crawler",
+    "reply"
+  ],
+  "author": "Ryan Julyan",
+  "license": "GNU General Public License",
+  "dependencies": {
+    "async": "^0.9.0",
+    "express": "^4.12.3",
+    "mongoose": "^3.8.25",
+    "socket.io": "^1.3.5",
+    "twitter": "^1.2.4"
+  }
+}
